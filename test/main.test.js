@@ -188,4 +188,22 @@ describe('new Generator', function() {
       editable: false
     });
   });
+
+  it('openapi product wires pop gateway', function () {
+    const outputDir = path.join(__dirname, 'output/popv4');
+    const mainFilePath = path.join(__dirname, 'fixtures/popv4/main.dara');
+    const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures/popv4/Darafile'), 'utf8'));
+    const generator = new Generator({
+      outputDir,
+      pkgDir: path.join(__dirname, 'fixtures/popv4'),
+      ...pkg
+    });
+    generator.visit(DSL.parse(fs.readFileSync(mainFilePath, 'utf8'), mainFilePath));
+    const client = fs.readFileSync(path.join(outputDir, 'src/client.ts'), 'utf8');
+    assert.ok(client.includes("import PopClient from '@alicloud/gateway-pop';"));
+    assert.ok(client.includes('this._productId = "Ecs";'));
+    assert.ok(client.includes('this._spi = new PopClient();'));
+    const packageJson = JSON.parse(fs.readFileSync(path.join(outputDir, 'package.json'), 'utf8'));
+    assert.strictEqual(packageJson.dependencies['@alicloud/gateway-pop'], '^0.1.6');
+  });
 });

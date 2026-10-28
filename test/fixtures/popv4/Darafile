@@ -1,0 +1,10 @@
+{
+  "scope": "alibabacloud",
+  "name": "main",
+  "version": "0.0.1",
+  "main": "./main.dara",
+  "productId": "Ecs",
+  "libraries": {
+    "OpenApi": "alibabacloud:OpenApi:*"
+  }
+}
